@@ -3,7 +3,6 @@
 using namespace std;
 
 # define _ ios_base::sync_with_stdio(false), cin.tie(NULL), cout.tie(NULL);
-# define MAXN 1000010
 # define MOD 1000000007
 # define INF 0x3f3f3f3f
 # define INFLL 0x3f3f3f3f3f3f3f3f
@@ -16,13 +15,15 @@ using namespace std;
 # define mp make_pair
 # define sz(x) int(x.size())
 # define all(x) x.begin(), x.end()
-# define mset(x,y) memset(&x, (y), sizeof(x))
+# define mset(x, y) memset(&x, (y), sizeof(x))
 
 typedef long long ll;
 typedef unsigned long long ull;
 typedef long double ld;
 typedef vector<int> vi;
 typedef pair<int, int> ii;
+
+const int N = 1e5 + 10;
 
 int main () {_
     
