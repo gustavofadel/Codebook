@@ -1,7 +1,7 @@
 struct point_i {
     int x, y;
-    point () { x = y = 0; }
-    point (int _x, int _y) : x(_x), y(_y) {}
+    point_i () { x = y = 0; }
+    point_i (int _x, int _y) : x(_x), y(_y) {}
 };
 
 struct point {
