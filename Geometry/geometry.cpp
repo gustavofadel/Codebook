@@ -24,7 +24,7 @@ struct line {
 struct vec {
     double x, y;
     vec (double _x, double _y) : x(_x), y(_y) {}
-}
+};
 
 double deg_to_rad (double d) { return d * M_PI / 180.0; }
 double rad_to_deg (double r) { return r * 180.0 / M_PI; }
