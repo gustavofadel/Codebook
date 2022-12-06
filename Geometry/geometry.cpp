@@ -190,3 +190,122 @@ int inside_rectangle (int x, int y, int w, int h, int a, int b) {
     else if (x <= a && a <= x + w && y <= b && b <= y + h) return 0; // Na borda
     else return -1; // Fora
 }
+
+double perimeter (const vector<point> &p) {
+    double ans = 0.0;
+
+    for (int i = 0; i < sz(p) - 1; i++) {
+        ans += dist(p[i], p[i + 1]);
+    }
+
+    return ans;
+}
+
+double area (const vector<point> &p) {
+    double ans = 0.0;
+
+    for (int i = 0; i < sz(p) - 1; i++) {
+        ans += p[i].x * p[i + 1].y - p[i + 1].x * p[i].y;
+    }
+
+    return fabs(ans) / 2.0;
+}
+
+double area_alternative (const vetor<point> &p) {
+    double ans = 0.0;
+    point o(0.0, 0.0);
+
+    for (int i = 0; i < sz(p) - 1; i++) {
+        ans += cross(to_vec(o, p[i]), to_vec(o, p[i + 1]));
+    }
+
+    return fabs(ans) / 2.0;
+}
+
+bool is_convex (const vector<point> &p) {
+    int n = sz(p);
+
+    if (n <= 3) return false;
+
+    bool first_turn = ccw(p[0], p[1], p[2]);
+
+    for (int i = 1; i < n - 1; i++) {
+        if (ccw(p[i], p[i + 1], p[(i + 2) == n ? 1 : i + 2]) != first_turn) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int inside_polygon (point pt, const vector<point> &p) {
+    int n = sz(p);
+
+    if (n <= 3) return -1;
+
+    bool on_polygon = false;
+
+    for (int i = 0; i < n - 1; i++) {
+        if (fabs(dist(p[i], pt) + dist(pt, p[i + 1]) - dist(p[i], p[i + 1])) < EPS) {
+            on_polygon = true;
+        }
+    }
+
+    if (on_polygon) return 0;
+
+    double sum = 0.0;
+
+    for (int i = 0; i < n - 1; i++) {
+        if (ccw(pt, p[i], p[i + 1])) sum += angle(p[i], pt, p[i + 1]);
+        else sum -= angle(p[i], pt, p[i + 1]);
+    }
+
+    return fabs(sum) > M_PI ? 1 : -1;
+}
+
+point intersection_point (point p, point q, point A, point B) {
+    double a = B.y - A.y, b = A.x - B.x, c = B.x * A.y - A.x * B.y;
+    double u = fabs(a * p.x + b * p.y + c);
+    double v = fabs(a * q.x + b * q.y + c);
+    return point((p.x * v + q.x * u) / (u + v), (p.y * v + q.y * u) / (u + v));
+}
+
+vector<point> cut_polygon (point a, point b, const vecotr<point> &q) {
+    vector<point> p;
+
+    for (int i = 0; i < sz(q); i++) {
+        double left1 = cross(to_vec(a, b), to_vec(a, q[i])), left2 = 0;
+        if (i != sz(q) - 1) left2 = cross(to_vec(a, b), to_vec(a, q[i + 1]));
+        if (left1 > -EPS) p.pb(q[i]);
+        if (left1 * left2 < -EPS) p.pb(intersection_point(q[i], q[i + 1], a, b));
+    }
+
+    if (!p.empty() && !(p.back() == p.front())) p.pb(p.front());
+    return p;
+}
+
+vector<point> convex_hull (vector<point> &pts) {
+    int n = sz(pts), k = 0;
+    vector<point> h(2 * n);
+
+    sort(all(pts));
+
+    for (int i = 0; i < n; i++) {
+        while (k >= 2 && !ccw(h[k - 2], h[k - 1], pts[i])) k--;
+        h[k++] = pts[i];
+    }
+
+    for (int i = n - 2, t = k + 1; i >= 0; i--) {
+        while (k >= t && !ccw(h[k - 2], h[k - 1], pts[i])) k--;
+        h[k++] = pts[i];
+    }
+
+    h.resize(k);
+    return h;
+}
+
+double great_circle_dist (double p_la, double p_lo, double q_la, double q_lo, double r) {
+    p_la *= M_PI / 180, p_lo *= M_PI / 180;
+    q_la *= M_PI / 180, q_lo *= M_PI / 180;
+    return r * acos(cos(p_la) * cos(p_lo) * cos(q_la) * cos(q_lo) + cos(p_la) * sin(p_lo) * cos(q_la) * sin(q_lo) + sin(p_la) * sin(q_la));
+}
