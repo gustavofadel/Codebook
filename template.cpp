@@ -25,6 +25,11 @@ typedef pair<int, int> ii;
 
 const int N = 1e5 + 10;
 
+void set_IO (string s) {
+    freopen((s + ".in").c_str(), "r", stdin);
+    freopen((s + ".out").c_str(), "w", stdout);
+}
+
 int main () {_
     
 }
